@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TurmaService {
@@ -30,13 +31,46 @@ public class TurmaService {
 
     public List<TurmaDTO> listar(){
         List<TurmaEntity> listEntity = turmaRepository.findAll();
-        List<TurmaDTO> listDTO = new ArrayList<>();
 
-        //TODO implementar a conversão da lista de objetos de TurmaEntity para TurmaDTO e retornar a listDTO preenchida
-
+        return converterEntityToDTO(listEntity);
 
 
-
-        return listDTO;
     }
+
+    private List<TurmaDTO> converterEntityToDTO(List<TurmaEntity> turmaEntities){
+
+        List<TurmaDTO> litsDTO = new ArrayList<>();
+
+        for(TurmaEntity turmaEntity : turmaEntities){
+
+            TurmaDTO turmaDTO = new TurmaDTO();
+
+            turmaDTO.setCurso(turmaDTO.getCurso());
+            turmaDTO.setInstrutores(turmaDTO.getInstrutores());
+            turmaDTO.setDtInicio(turmaDTO.getDtInicio());
+            turmaDTO.setDtFim(turmaDTO.getDtFim());
+
+           List<AlunoEntity> alunosEntity = turmaEntity.getAlunos();
+
+            List<AlunoDTO> alunosDTO = new ArrayList<>();
+
+            for(AlunoEntity alunoEntity : alunosEntity){
+                AlunoDTO alunoDTO = new AlunoDTO();
+                alunoDTO.setNome(alunoEntity.getNomeAluno());
+                alunoDTO.setCpf(alunoEntity.getCpf());
+
+
+                alunosDTO.add(alunoDTO);
+            }
+
+            turmaDTO.setAlunos(alunosDTO);
+            litsDTO.add(turmaDTO);
+
+            }
+
+
+        return litsDTO;
+    }
+
 }
+
